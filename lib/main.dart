@@ -1,27 +1,36 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:hexcolor/hexcolor.dart';
 import 'package:testphase/login_screen.dart';
-import 'package:testphase/registeration_screen.dart';
+import 'package:testphase/registration_screen.dart';
 
 void main() {
-  //SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      //systemNavigationBarColor: Colors.blueAccent,
-      //statusBarColor: Colors.blueAccent
-  //));
-
   WidgetsFlutterBinding.ensureInitialized();
 
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      systemNavigationBarColor: Colors.blueAccent,
+      statusBarColor: Colors.blueAccent));
+
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  final Future<FirebaseApp> _fApp = Firebase.initializeApp();
+
+  MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(home: MyMainScreen());
+    return MaterialApp(
+        home: FutureBuilder(
+      future: _fApp,
+      builder: (context, snap) {
+        return snap.hasError
+            ? const Text("Error Initializing Firebase")
+            : const MyMainScreen();
+      },
+    ));
   }
 }
 
@@ -71,9 +80,11 @@ class MyMainScreen extends StatelessWidget {
                         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                         shape: const StadiumBorder(),
                         child: const Text(
-                          "Login",
-                          style: TextStyle(fontSize: 25,
-                          color: Colors.white,
+                          "LOGIN",
+                          style: TextStyle(
+                            fontSize: 25,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
                       ),
@@ -86,7 +97,6 @@ class MyMainScreen extends StatelessWidget {
                           shape: RoundedRectangleBorder(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(15.0)),
-                            //side: BorderSide(color: Colors.black26, width: 3.0),
                           ),
                           gradient: LinearGradient(
                             begin: Alignment.topLeft,
@@ -94,7 +104,6 @@ class MyMainScreen extends StatelessWidget {
                             colors: [
                               Color.fromRGBO(36, 198, 220, 1),
                               Color.fromRGBO(81, 74, 157, 1),
-
                             ],
                           )),
                       child: MaterialButton(
@@ -108,9 +117,11 @@ class MyMainScreen extends StatelessWidget {
                         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                         shape: const StadiumBorder(),
                         child: const Text(
-                          'Register',
-                          style: TextStyle(fontSize: 25,
-                          color: Colors.white,
+                          'REGISTER',
+                          style: TextStyle(
+                            fontSize: 25,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
                           ),
                         ),
                       ),
